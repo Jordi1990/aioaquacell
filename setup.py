@@ -23,5 +23,5 @@ setup(
     description="Asynchronous library to retrieve details of your Aquacell water softener device",
     long_description=README_FILE.read_text(encoding="utf-8"),
     long_description_content_type="text/markdown",
-    download_url="https://github.com/Jordi1990/aioaquacell/archive/refs/tags/v0.0.1.tar.gz",
+    download_url="https://github.com/Jordi1990/aioaquacell/archive/refs/tags/v0.0.2.tar.gz",
 )
