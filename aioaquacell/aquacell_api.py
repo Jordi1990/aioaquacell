@@ -26,15 +26,15 @@ class AquacellApi:
 
     """ Authenticate using a previous obtained refresh token. """
 
-    async def authenticate(self, refresh_token):
+    async def authenticate(self, refresh_token) -> str:
         return await self.__authenticate(None, None, refresh_token)
 
     """" Authenticate using username and password. """
 
-    async def authenticate(self, user_name, password):
+    async def authenticate(self, user_name, password) -> bool:
         return await self.__authenticate(user_name, password, None)
 
-    async def __authenticate(self, user_name, password, refresh_token):
+    async def __authenticate(self, user_name, password, refresh_token) -> bool:
         try:
             if refresh_token is None:
                 token = await self.authenticator.get_new_token(user_name, password)
@@ -48,7 +48,7 @@ class AquacellApi:
             print(e)
             return False
 
-    async def get_all_softeners(self):
+    async def get_all_softeners(self) -> list[Softener]:
         if self.id_token is None:
             raise Exception("Not authenticated")
 

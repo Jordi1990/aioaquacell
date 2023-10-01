@@ -1,1 +1,1 @@
-from .aquacell_api import AquacellApi
+from .aquacell_api import AquacellApi, Softener
