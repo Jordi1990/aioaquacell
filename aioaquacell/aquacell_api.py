@@ -3,10 +3,8 @@ import json
 
 from aiohttp import ClientSession
 
-from aioaquacell.aws import (
-    AwsSignatureRequest,
-    AwsCognitoAuthenticator,
-)
+from aioaquacell.aws_cognito_authenticator import AwsCognitoAuthenticator
+from aioaquacell.aws_signature_request import AwsSignatureRequest
 from aioaquacell.softener import Softener
 
 
