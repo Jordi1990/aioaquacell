@@ -26,7 +26,7 @@ class AquacellApi:
 
     """ Authenticate using a previous obtained refresh token. """
 
-    async def authenticate(self, refresh_token) -> str:
+    async def authenticate_refresh(self, refresh_token) -> bool:
         return await self.__authenticate(None, None, refresh_token)
 
     """" Authenticate using username and password. """
