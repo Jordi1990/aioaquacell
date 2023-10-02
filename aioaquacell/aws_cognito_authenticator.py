@@ -16,7 +16,7 @@ class AwsCognitoAuthenticator:
 
     """ Regenerates the token by providing a refresh token. """
 
-    async def get_new_token(self, refresh_token) -> AuthenticationTokens:
+    async def refresh_token(self, refresh_token) -> AuthenticationTokens:
         async with self.session.client(
             "cognito-idp", region_name=self.region_name
         ) as cognito_identity_provider:

@@ -39,7 +39,7 @@ class AquacellApi:
             if refresh_token is None:
                 token = await self.authenticator.get_new_token(user_name, password)
             else:
-                token = await self.authenticator.get_new_token(refresh_token)
+                token = await self.authenticator.refresh_token(refresh_token)
 
             self.refresh_token = token.refresh_token
             self.id_token = token.id_token
