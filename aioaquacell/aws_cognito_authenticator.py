@@ -81,8 +81,6 @@ class AwsCognitoAuthenticator:
                 IdentityPoolId=self.identity_pool_id, Logins=logins
             )
 
-            print(identity_response)
-
             # Get credentials for the identity
             credentials_response = await cognito_identity.get_credentials_for_identity(
                 IdentityId=identity_response["IdentityId"], Logins=logins

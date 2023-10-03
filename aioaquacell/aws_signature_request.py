@@ -32,9 +32,8 @@ class AwsSignatureRequest:
             session = aiohttp.ClientSession()
         headers = {}
 
-        test = request_signer.sign_with_headers("GET", url, headers)
+        signed_headers = request_signer.sign_with_headers("GET", url, headers)
 
-        session.headers.update(test)
         async with session:
-            async with session.get(url) as response:
+            async with session.get(url, headers=signed_headers) as response:
                 return await response.text()
