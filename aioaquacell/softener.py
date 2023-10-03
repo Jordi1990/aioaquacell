@@ -10,7 +10,7 @@ class Softener:
         self.name = data["name"]
         self.ssn = data["ssn"]
         self.dsn = data["dsn"]
-        self.salt: Salt = data["salt"]
+        self.salt: Salt = Salt(data["salt"])
         self.wifiLevel = data["wifiLevel"]
         self.fwVersion = data["fwVersion"]
         self.lastUpdate = data["lastUpdate"]
@@ -19,8 +19,8 @@ class Softener:
         self.buzzerNotificationEnabled = data["buzzerNotificationEnabled"]
         self.brand = data["brand"]
         self.numberOfPeople = data["numberOfPeople"]
-        self.location: Location = data["location"]
-        self.dealer: Dealer = data["dealer"]
+        self.location: Location = Location(data["location"])
+        self.dealer: Dealer = Dealer(data["dealer"])
 
 
 class Salt:
