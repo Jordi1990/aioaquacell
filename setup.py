@@ -3,7 +3,7 @@ from setuptools import setup
 
 PROJECT_DIR = Path(__file__).parent.resolve()
 README_FILE = PROJECT_DIR / "README.md"
-VERSION = "0.0.9"
+VERSION = "0.1.0"
 
 setup(
     name="aioaquacell",
@@ -23,5 +23,5 @@ setup(
     description="Asynchronous library to retrieve details of your Aquacell water softener device",
     long_description=README_FILE.read_text(encoding="utf-8"),
     long_description_content_type="text/markdown",
-    download_url="https://github.com/Jordi1990/aioaquacell/archive/refs/tags/v0.0.9.tar.gz",
+    download_url="https://github.com/Jordi1990/aioaquacell/archive/refs/tags/v0.1.0.tar.gz",
 )

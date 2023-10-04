@@ -11,7 +11,7 @@ class AwsSignatureRequest:
         self.secret_key = secret_key
         self.access_key = access_key
 
-    async def request(self, url, session: ClientSession = None):
+    async def request(self, url, session: ClientSession):
         auth = AWS4Auth(
             self.access_key,
             self.secret_key,
@@ -28,12 +28,9 @@ class AwsSignatureRequest:
             self.session_token,
         )
 
-        if session is None:
-            session = aiohttp.ClientSession()
         headers = {}
 
         signed_headers = request_signer.sign_with_headers("GET", url, headers)
 
-        async with session:
-            async with session.get(url, headers=signed_headers) as response:
-                return await response.text()
+        async with session.get(url, headers=signed_headers) as response:
+            return await response.text()

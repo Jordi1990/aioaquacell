@@ -16,7 +16,7 @@ class AquacellApi:
     pool_id = "eu-west-1_noZbcE2Av"
     identity_pool_id = "eu-west-1:f44120d5-bd20-4461-b282-1ed637861951"
 
-    def __init__(self, session: ClientSession = None):
+    def __init__(self, session: ClientSession):
         self.session = session
         self.refresh_token = None
         self.id_token = None
