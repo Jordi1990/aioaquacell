@@ -1,10 +1,12 @@
 """ Parses data from the Aquacell API. """
 import json
 
+import botocore
 from aiohttp import ClientSession
 
 from aioaquacell.aws_cognito_authenticator import AwsCognitoAuthenticator
 from aioaquacell.aws_signature_request import AwsSignatureRequest
+from aioaquacell.exceptions import NotAuthenticated, ApiException, AutenticationFailed
 from aioaquacell.softener import Softener
 
 
@@ -26,15 +28,15 @@ class AquacellApi:
 
     """ Authenticate using a previous obtained refresh token. """
 
-    async def authenticate_refresh(self, refresh_token) -> bool:
-        return await self.__authenticate(None, None, refresh_token)
+    async def authenticate_refresh(self, refresh_token) -> None:
+        await self.__authenticate(None, None, refresh_token)
 
     """" Authenticate using username and password. """
 
-    async def authenticate(self, user_name, password) -> bool:
-        return await self.__authenticate(user_name, password, None)
+    async def authenticate(self, user_name, password) -> None:
+        await self.__authenticate(user_name, password, None)
 
-    async def __authenticate(self, user_name, password, refresh_token) -> bool:
+    async def __authenticate(self, user_name, password, refresh_token) -> None:
         try:
             if refresh_token is None:
                 token = await self.authenticator.get_new_token(user_name, password)
@@ -43,29 +45,33 @@ class AquacellApi:
 
             self.refresh_token = token.refresh_token
             self.id_token = token.id_token
-            return True
-        except Exception as e:
-            print(e)
-            return False
+        except botocore.exceptions.ClientError as e:
+            if e.response['Error']['Code'] == 'NotAuthorizedException':
+                raise AutenticationFailed(e)
+            else:
+                raise ApiException(e)
 
     async def get_all_softeners(self) -> list[Softener]:
         if self.id_token is None:
-            raise Exception("Not authenticated")
+            raise NotAuthenticated()
 
-        credentials = await self.authenticator.get_credentials(self.id_token)
-        request = AwsSignatureRequest(
-            credentials.aws_access_key_id,
-            credentials.aws_secret_access_key,
-            credentials.aws_session_token,
-            self.region_name,
-        )
+        try:
+            credentials = await self.authenticator.get_credentials(self.id_token)
+            request = AwsSignatureRequest(
+                credentials.aws_access_key_id,
+                credentials.aws_secret_access_key,
+                credentials.aws_session_token,
+                self.region_name,
+            )
 
-        response = await request.request(self.all_softeners, self.session)
+            response = await request.request(self.all_softeners, self.session)
 
-        json_response = json.loads(response)
+            json_response = json.loads(response)
 
-        softeners = []
-        for softener_as_json in json_response:
-            softeners.append(Softener(softener_as_json))
+            softeners = []
+            for softener_as_json in json_response:
+                softeners.append(Softener(softener_as_json))
 
-        return softeners
+            return softeners
+        except botocore.exceptions.ClientError as e:
+            raise ApiException(e)

@@ -9,6 +9,7 @@ Asynchronous library to retrieve details of your Aquacell water softener device
 - requests_aws4auth
 - pycognito
 - aws_request_signer
+- botocore
 
 ## Usage
 
@@ -19,14 +20,13 @@ password = "<password>"
 
 async def main():
     api = AquacellApi()
-    authenticated = await api.authenticate(userName, password)
-    print(authenticated)
+    await api.authenticate(userName, password)
     # Get the refresh token
     print(api.refresh_token)
-    if authenticated:
-        softeners = await api.get_all_softeners()
-        for softener in softeners:
-            print(softener.name)
+    
+    softeners = await api.get_all_softeners()
+    for softener in softeners:
+        print(softener.name)
 
 
 if __name__ == "__main__":
@@ -37,5 +37,5 @@ if __name__ == "__main__":
 ```python
 refresh_token = "<refresh token>"
 api = AquacellApi()
-authenticated = await api.authenticate(refresh_token)
+await api.authenticate(refresh_token)
 ```

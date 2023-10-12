@@ -15,6 +15,7 @@ setup(
         "pycognito",
         "aws_request_signer",
         "aioboto3",
+        "botocore",
     ],
     url="https://github.com/Jordi1990/aioaquacell",
     license="Apache License 2.0",
