@@ -1,2 +1,2 @@
 from .aquacell_api import AquacellApi, Softener
-from .exceptions import ApiException, AutenticationFailed, NotAuthenticated, AquacellApiException
+from .exceptions import ApiException, AuthenticationFailed, NotAuthenticated, AquacellApiException

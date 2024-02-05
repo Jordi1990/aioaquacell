@@ -20,19 +20,17 @@ class AquacellApi:
 
     def __init__(self, session: ClientSession):
         self.session = session
-        self.refresh_token = None
         self.id_token = None
+        self.refresh_token = None
         self.authenticator = AwsCognitoAuthenticator(
             self.region_name, self.client_id, self.pool_id, self.identity_pool_id
         )
 
     """ Authenticate using a previous obtained refresh token. """
-
     async def authenticate_refresh(self, refresh_token) -> None:
         await self.__authenticate(None, None, refresh_token)
 
     """" Authenticate using username and password. """
-
     async def authenticate(self, user_name, password) -> None:
         await self.__authenticate(user_name, password, None)
 
@@ -40,10 +38,10 @@ class AquacellApi:
         try:
             if refresh_token is None:
                 token = await self.authenticator.get_new_token(user_name, password)
+                self.refresh_token = token.refresh_token
             else:
                 token = await self.authenticator.refresh_token(refresh_token)
 
-            self.refresh_token = token.refresh_token
             self.id_token = token.id_token
         except botocore.exceptions.ClientError as e:
             if e.response['Error']['Code'] == 'NotAuthorizedException':

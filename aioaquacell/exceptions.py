@@ -10,5 +10,5 @@ class ApiException(AquacellApiException):
     """ Api error. """
 
 
-class AutenticationFailed(AquacellApiException):
+class AuthenticationFailed(AquacellApiException):
     """ Authentication failed. """
