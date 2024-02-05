@@ -6,7 +6,7 @@ from aiohttp import ClientSession
 
 from aioaquacell.aws_cognito_authenticator import AwsCognitoAuthenticator
 from aioaquacell.aws_signature_request import AwsSignatureRequest
-from aioaquacell.exceptions import NotAuthenticated, ApiException, AutenticationFailed
+from aioaquacell.exceptions import NotAuthenticated, ApiException, AuthenticationFailed
 from aioaquacell.softener import Softener
 
 
@@ -45,7 +45,7 @@ class AquacellApi:
             self.id_token = token.id_token
         except botocore.exceptions.ClientError as e:
             if e.response['Error']['Code'] == 'NotAuthorizedException':
-                raise AutenticationFailed(e)
+                raise AuthenticationFailed(e)
             else:
                 raise ApiException(e)
 
