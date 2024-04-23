@@ -25,8 +25,8 @@ class Softener:
 
 class Salt:
     def __init__(self, data):
-        self.leftPercent = data["leftPercent"]
-        self.rightPercent = data["rightPercent"]
+        self.leftPercent = data.get("leftPercent", 0)
+        self.rightPercent = data.get("rightPercent", 0)
         self.leftDays = data["leftDays"]
         self.rightDays = data["rightDays"]
         self.leftBlocks = data["leftBlocks"]
