@@ -1,5 +1,6 @@
 """ Parses data from the Aquacell API. """
 import json
+import string
 
 import botocore
 from aiohttp import ClientSession
@@ -21,28 +22,27 @@ class AquacellApi:
     def __init__(self, session: ClientSession):
         self.session = session
         self.id_token = None
-        self.refresh_token = None
         self.authenticator = AwsCognitoAuthenticator(
             self.region_name, self.client_id, self.pool_id, self.identity_pool_id
         )
 
     """ Authenticate using a previous obtained refresh token. """
-    async def authenticate_refresh(self, refresh_token) -> None:
-        await self.__authenticate(None, None, refresh_token)
+    async def authenticate_refresh(self, refresh_token) -> string:
+        return await self.__authenticate(None, None, refresh_token)
 
     """" Authenticate using username and password. """
-    async def authenticate(self, user_name, password) -> None:
-        await self.__authenticate(user_name, password, None)
+    async def authenticate(self, user_name, password) -> string:
+        return await self.__authenticate(user_name, password, None)
 
-    async def __authenticate(self, user_name, password, refresh_token) -> None:
+    async def __authenticate(self, user_name, password, refresh_token) -> string:
         try:
             if refresh_token is None:
                 token = await self.authenticator.get_new_token(user_name, password)
-                self.refresh_token = token.refresh_token
             else:
                 token = await self.authenticator.refresh_token(refresh_token)
 
             self.id_token = token.id_token
+            return token.refresh_token
         except botocore.exceptions.ClientError as e:
             if e.response['Error']['Code'] == 'NotAuthorizedException':
                 raise AuthenticationFailed(e)
