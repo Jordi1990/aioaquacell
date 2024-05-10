@@ -1,6 +1,6 @@
 """Represents all properties of a softener device."""
 import string
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import cast
 
 
@@ -8,7 +8,8 @@ class Softener:
     def __init__(self, data):
         self.halfLevelNotificationEnabled: bool = data["halfLevelNotificationEnabled"]
         self.thresholds: dict = data["thresholds"]
-        self.on_boarding_date: datetime = datetime.utcfromtimestamp(cast(float, data["on_boarding_date"]) / 1000)
+        self.on_boarding_date: datetime = datetime.fromtimestamp(
+            cast(float, data["on_boarding_date"]) / 1000, tz=timezone.utc)
         self.dummy: string = data["dummy"]
         self.name: string = data["name"]
         self.ssn: string = data["ssn"]
@@ -16,7 +17,7 @@ class Softener:
         self.salt: Salt = Salt(data["salt"])
         self.wifiLevel: string = data["wifiLevel"]
         self.fwVersion: string = data["fwVersion"]
-        self.lastUpdate = datetime.utcfromtimestamp(cast(float, data["lastUpdate"]) / 1000)
+        self.lastUpdate = datetime.fromtimestamp(cast(float, data["lastUpdate"]) / 1000, tz=timezone.utc)
         self.battery: int = data["battery"]
         self.lidInPlace: bool = data["lidInPlace"]
         self.buzzerNotificationEnabled: bool = data["buzzerNotificationEnabled"]
