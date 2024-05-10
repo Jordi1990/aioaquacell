@@ -1,5 +1,6 @@
 """ Parses data from the Aquacell API. """
 import json
+import logging
 import string
 
 import botocore
@@ -10,6 +11,7 @@ from aioaquacell.aws_signature_request import AwsSignatureRequest
 from aioaquacell.exceptions import NotAuthenticated, ApiException, AuthenticationFailed
 from aioaquacell.softener import Softener
 
+_LOGGER = logging.getLogger(__name__)
 
 class AquacellApi:
     base_url = "https://y7xyrocicl.execute-api.eu-west-1.amazonaws.com"
@@ -35,6 +37,7 @@ class AquacellApi:
         return await self.__authenticate(user_name, password, None)
 
     async def __authenticate(self, user_name, password, refresh_token) -> string:
+        _LOGGER.debug("Authenticating with %s - %s (%s)", user_name, password, refresh_token)
         try:
             if refresh_token is None:
                 token = await self.authenticator.get_new_token(user_name, password)
@@ -44,6 +47,7 @@ class AquacellApi:
             self.id_token = token.id_token
             return token.refresh_token
         except botocore.exceptions.ClientError as e:
+            _LOGGER.exception("Exception while authenticating")
             if e.response['Error']['Code'] == 'NotAuthorizedException':
                 raise AuthenticationFailed(e)
             else:
@@ -72,4 +76,5 @@ class AquacellApi:
 
             return softeners
         except botocore.exceptions.ClientError as e:
+            _LOGGER.exception("Exception while retrieving softeners")
             raise ApiException(e)

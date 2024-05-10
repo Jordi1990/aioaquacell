@@ -1,9 +1,13 @@
 """ AWS Cognito authentication and identity management. """
+import logging
+
 import aioboto3
 from pycognito import AWSSRP
 
 from aioaquacell.authentication_tokens import AuthenticationTokens
 from aioaquacell.aws_credentials import AwsCredentials
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class AwsCognitoAuthenticator:
@@ -27,7 +31,7 @@ class AwsCognitoAuthenticator:
                 },
                 ClientId=self.client_id,
             )
-
+        _LOGGER.debug("Authentication response %s", resp)
         return AuthenticationTokens(resp["AuthenticationResult"])
 
     """ Gets the initial token by providing username and password. """
@@ -62,7 +66,7 @@ class AwsCognitoAuthenticator:
                 ChallengeName="PASSWORD_VERIFIER",
                 ChallengeResponses=challenge_response,
             )
-
+        _LOGGER.debug("Authentication result %s", resp)
         return AuthenticationTokens(resp["AuthenticationResult"])
 
     """ Retrieves the AWS credentials to sign a request. """
@@ -85,5 +89,5 @@ class AwsCognitoAuthenticator:
             credentials_response = await cognito_identity.get_credentials_for_identity(
                 IdentityId=identity_response["IdentityId"], Logins=logins
             )
-
+        _LOGGER.debug("Get credentials %s", credentials_response)
         return AwsCredentials(credentials_response["Credentials"])
