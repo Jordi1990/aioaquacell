@@ -2,7 +2,7 @@
 import json
 import logging
 import string
-
+import asyncio
 import botocore
 from aiohttp import ClientSession
 
@@ -12,6 +12,7 @@ from aioaquacell.exceptions import NotAuthenticated, ApiException, Authenticatio
 from aioaquacell.softener import Softener
 
 _LOGGER = logging.getLogger(__name__)
+
 
 class AquacellApi:
     base_url = "https://y7xyrocicl.execute-api.eu-west-1.amazonaws.com"
@@ -40,9 +41,10 @@ class AquacellApi:
         _LOGGER.debug("Authenticating with %s - %s (%s)", user_name, password, refresh_token)
         try:
             if refresh_token is None:
-                token = await self.authenticator.get_new_token(user_name, password)
+                # Use asyncio_to_thread to make sure aiobotocore doesn't block event loop.
+                token = await asyncio.to_thread(self.authenticator.get_new_token, user_name, password)
             else:
-                token = await self.authenticator.refresh_token(refresh_token)
+                token = await asyncio.to_thread(self.authenticator.refresh_token, refresh_token)
 
             self.id_token = token.id_token
             return token.refresh_token
@@ -58,7 +60,7 @@ class AquacellApi:
             raise NotAuthenticated()
 
         try:
-            credentials = await self.authenticator.get_credentials(self.id_token)
+            credentials = await asyncio.to_thread(self.authenticator.get_credentials, self.id_token)
             request = AwsSignatureRequest(
                 credentials.aws_access_key_id,
                 credentials.aws_secret_access_key,

@@ -1,15 +1,17 @@
 # Aioaquacell
 
-Asynchronous library to retrieve details of your Aquacell water softener device
+Asynchronous library to retrieve details of your Aquacell water softener device.
+This API is reverse engineered from the official Android application.
 
 ## Requirements
 
 - aiohttp
-- aioboto3
+- aiobotocore
 - requests_aws4auth
 - pycognito
 - aws_request_signer
 - botocore
+- botocore3
 
 ## Usage
 
