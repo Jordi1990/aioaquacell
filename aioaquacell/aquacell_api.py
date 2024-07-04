@@ -73,6 +73,8 @@ class AquacellApi:
             json_response = json.loads(response)
 
             softeners = []
+
+            _LOGGER.debug(json_response)
             for softener_as_json in json_response:
                 softeners.append(Softener(softener_as_json))
 

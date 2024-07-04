@@ -6,10 +6,8 @@ from typing import cast
 class Softener:
     def __init__(self, data):
         self.halfLevelNotificationEnabled: bool = data["halfLevelNotificationEnabled"]
-        self.thresholds: dict = data["thresholds"]
         self.on_boarding_date: datetime = datetime.fromtimestamp(
             cast(float, data["on_boarding_date"]) / 1000, tz=timezone.utc)
-        self.dummy: string = data["dummy"]
         self.name: str = data["name"]
         self.ssn: str = data["ssn"]
         self.dsn: str = data["dsn"]
@@ -21,9 +19,6 @@ class Softener:
         self.lidInPlace: bool = data["lidInPlace"]
         self.buzzerNotificationEnabled: bool = data["buzzerNotificationEnabled"]
         self.brand: str = data["brand"]
-        self.numberOfPeople: int = data["numberOfPeople"]
-        self.location: Location = Location(data["location"])
-        self.dealer: Dealer = Dealer(data["dealer"])
 
 
 class Salt:
@@ -35,19 +30,3 @@ class Salt:
         self.leftBlocks: int = data["leftBlocks"]
         self.rightBlocks: int = data["rightBlocks"]
         self.daysLeft: int = data["daysLeft"]
-
-
-class Location:
-    def __init__(self, data):
-        self.address: str = data["address"]
-        self.postcode: str = data["postcode"]
-        self.country: str = data["country"]
-
-
-class Dealer:
-    def __init__(self, data):
-        self.website: str = data["website"]
-        self.dealerId: str = data["dealerId"]
-        self.shop: dict = data["shop"]
-        self.name: str = data["name"]
-        self.support: dict = data["support"]
