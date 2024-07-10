@@ -8,6 +8,7 @@ from aiohttp import ClientSession
 
 from aioaquacell.aws_cognito_authenticator import AwsCognitoAuthenticator
 from aioaquacell.aws_signature_request import AwsSignatureRequest
+from aioaquacell.const import Brand, SUPPORTED_BRANDS, REGION_NAME, ALL_SOFTENERS
 from aioaquacell.exceptions import NotAuthenticated, ApiException, AuthenticationFailed
 from aioaquacell.softener import Softener
 
@@ -15,32 +16,18 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class AquacellApi:
-    base_url = "https://y7xyrocicl.execute-api.eu-west-1.amazonaws.com"
-    all_softeners = f"{base_url}/prod/v1/softeners/all"
-    region_name = "eu-west-1"
-    client_id = "64kp67l1jo9toeesan7s1sdpae"
-    pool_id = "eu-west-1_noZbcE2Av"
-    identity_pool_id = "eu-west-1:f44120d5-bd20-4461-b282-1ed637861951"
-    harvey_client_id = "67c9dtgnbjid8l9dh5juih2iq4"
-    harvey_pool_id = "eu-west-1_gtX9aUXzh"
-    harvey_identity_pool_id = "eu-west-1:f8177510-75ef-4533-a317-9ac8d240fcef"
 
-    def __init__(self, session: ClientSession, brandName=None):
+    def __init__(self, session: ClientSession, brand: Brand = Brand.AQUACELL):
         self.session = session
         self.id_token = None
 
-        if brandName is None:
-            # Default is Aquacell, no need to do anything
-            _LOGGER.debug("Brand name unset, defaulting to Aquacell")
-        elif "harvey" in brandName.lower():
-            # Harvey
-            _LOGGER.debug("Brand name set to %s, using Harvey auth details", brandName)
-            self.client_id = self.harvey_client_id
-            self.pool_id = self.harvey_pool_id
-            self.identity_pool_id = self.harvey_identity_pool_id
+        _LOGGER.debug("Using authentication details from %s", brand)
+        self.client_id = SUPPORTED_BRANDS[brand].client_id
+        self.pool_id = SUPPORTED_BRANDS[brand].pool_id
+        self.identity_pool_id = SUPPORTED_BRANDS[brand].identity_pool_id
 
         self.authenticator = AwsCognitoAuthenticator(
-            self.region_name, self.client_id, self.pool_id, self.identity_pool_id
+            REGION_NAME, self.client_id, self.pool_id, self.identity_pool_id
         )
 
     """ Authenticate using a previous obtained refresh token. """
@@ -79,10 +66,10 @@ class AquacellApi:
                 credentials.aws_access_key_id,
                 credentials.aws_secret_access_key,
                 credentials.aws_session_token,
-                self.region_name,
+                REGION_NAME,
             )
 
-            response = await request.request(self.all_softeners, self.session)
+            response = await request.request(ALL_SOFTENERS, self.session)
 
             json_response = json.loads(response)
 
