@@ -2,6 +2,7 @@
 
 Asynchronous library to retrieve details of your Aquacell water softener device.
 This API is reverse engineered from the official Android application.
+Credentials used can be verified in the APK (res\raw\amplifyconfiguration.json).
 
 ## Requirements
 
