@@ -1,0 +1,59 @@
+[tool.poetry]
+name = "aioaquacell"
+version = "0.0.0"
+description = "Asynchronous library to retrieve details of your Aquacell water softener device"
+authors = ["Jordi Epema <jordi.epema@gmail.com>"]
+maintainers = ["Jordi Epema <jordi.epema@gmail.com>"]
+license = "Apache License 2.0"
+readme = "README.md"
+homepage = "https://github.com/Jordi1990/aioaquacell"
+repository = "https://github.com/Jordi1990/aioaquacell"
+documentation = "https://github.com/Jordi1990/aioaquacell"
+packages = [
+    { include = "aioaquacell" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.13"
+attr = "^0.3.2"
+boto3 = "^1.35.76"
+aiohttp = "^3.11.10"
+pycognito = "^2024.5.1"
+aws-request-signer = "^1.2.0"
+botocore = "^1.35.76"
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.poetry.dev-dependencies]
+isort = "^5.13.2"
+ruff = "0.8.1"
+pylint = "^3.3.1"
+
+[tool.pylint.BASIC]
+good-names = [
+    "_",
+    "ex",
+    "fp",
+    "i",
+    "id",
+    "j",
+    "k",
+    "on",
+    "Run",
+    "T",
+]
+
+[tool.pylint.SIMILARITIES]
+ignore-imports = true
+
+[tool.pylint.FORMAT]
+max-line-length=120
+
+[tool.pylint.DESIGN]
+max-attributes=20
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
