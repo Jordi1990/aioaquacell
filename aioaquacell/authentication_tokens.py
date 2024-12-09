@@ -1,7 +1,7 @@
 """" Holds the tokens retrieved from authentication. """
 
-
 class AuthenticationTokens:
+    """" Holds the tokens retrieved from authentication. """
     def __init__(self, data):
         self.id_token = data["IdToken"]
         try:

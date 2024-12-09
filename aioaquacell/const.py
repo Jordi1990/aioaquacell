@@ -6,6 +6,7 @@ from aioaquacell.brand_credentials import BrandCredentials
 
 @unique
 class Brand(StrEnum):
+    """ Supported brands to use with this API. """
     AQUACELL = "aquacell"
     HARVEY = "harvey"
 

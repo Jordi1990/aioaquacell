@@ -1,3 +1,4 @@
+""" Class which holds credentials for a specific brand. """
 from attr import define
 
 

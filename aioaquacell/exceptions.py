@@ -1,3 +1,5 @@
+""" Exceptions. """
+
 class AquacellApiException(Exception):
     """ Base exception for Aquacell API """
 

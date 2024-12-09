@@ -1,9 +1,11 @@
 """ AWS Cognito authentication and identity management. """
 import logging
+from concurrent.futures import ThreadPoolExecutor
+
 import boto3
 from aiobotocore.session import get_session
 from pycognito import AWSSRP
-from concurrent.futures import ThreadPoolExecutor
+
 from aioaquacell.authentication_tokens import AuthenticationTokens
 from aioaquacell.aws_credentials import AwsCredentials
 
@@ -13,6 +15,7 @@ executor = ThreadPoolExecutor(max_workers=5)
 
 
 class AwsCognitoAuthenticator:
+    """ AWS Cognito authentication and identity management. """
     def __init__(self, region_name, client_id, pool_id, identity_pool_id):
         self.region_name = region_name
         self.identity_pool_id = identity_pool_id
@@ -20,9 +23,8 @@ class AwsCognitoAuthenticator:
         self.pool_id = pool_id
         self.session = get_session()
 
-    """ Regenerates the token by providing a refresh token. """
-
     def refresh_token(self, refresh_token) -> AuthenticationTokens:
+        """ Regenerates the token by providing a refresh token. """
         cognito_identity_provider = boto3.client("cognito-idp", self.region_name)
         resp = cognito_identity_provider.initiate_auth(
             AuthFlow="REFRESH_TOKEN_AUTH",
@@ -34,9 +36,8 @@ class AwsCognitoAuthenticator:
         _LOGGER.debug("Authentication response %s", resp)
         return AuthenticationTokens(resp["AuthenticationResult"])
 
-    """ Gets the initial token by providing username and password. """
-
     def get_new_token(self, username, password) -> AuthenticationTokens:
+        """ Gets the initial token by providing username and password. """
         cognito_identity_provider = boto3.client("cognito-idp", self.region_name)
         # Start the authentication flow
         aws_srp = AWSSRP(
@@ -67,9 +68,8 @@ class AwsCognitoAuthenticator:
         _LOGGER.debug("Authentication result %s", resp)
         return AuthenticationTokens(resp["AuthenticationResult"])
 
-    """ Retrieves the AWS credentials to sign a request. """
-
     def get_credentials(self, id_token) -> AwsCredentials:
+        """ Retrieves the AWS credentials to sign a request. """
         cognito_identity = boto3.client("cognito-identity", self.region_name)
         # Add the Cognito ID to the login tokens
         logins = {

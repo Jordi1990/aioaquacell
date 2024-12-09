@@ -16,6 +16,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class AquacellApi:
+    """ Aquacell API. """
 
     def __init__(self, session: ClientSession, brand: Brand = Brand.AQUACELL):
         self.session = session
@@ -29,13 +30,13 @@ class AquacellApi:
         self.authenticator = AwsCognitoAuthenticator(
             REGION_NAME, self.client_id, self.pool_id, self.identity_pool_id
         )
-
-    """ Authenticate using a previous obtained refresh token. """
+    
     async def authenticate_refresh(self, refresh_token) -> string:
+        """ Authenticate using a previous obtained refresh token. """
         return await self.__authenticate(None, None, refresh_token)
 
-    """" Authenticate using username and password. """
     async def authenticate(self, user_name, password) -> string:
+        """ Authenticate using username and password. """
         return await self.__authenticate(user_name, password, None)
 
     async def __authenticate(self, user_name, password, refresh_token) -> string:
@@ -52,11 +53,11 @@ class AquacellApi:
         except botocore.exceptions.ClientError as e:
             _LOGGER.exception("Exception while authenticating")
             if e.response['Error']['Code'] == 'NotAuthorizedException':
-                raise AuthenticationFailed(e)
-            else:
-                raise ApiException(e)
+                raise AuthenticationFailed(e) from e
+            raise ApiException(e) from e
 
     async def get_all_softeners(self) -> list[Softener]:
+        """ Retrieves all softeners. """
         if self.id_token is None:
             raise NotAuthenticated()
 
@@ -82,4 +83,4 @@ class AquacellApi:
             return softeners
         except botocore.exceptions.ClientError as e:
             _LOGGER.exception("Exception while retrieving softeners")
-            raise ApiException(e)
+            raise ApiException(e) from e
