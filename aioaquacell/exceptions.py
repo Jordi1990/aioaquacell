@@ -1,16 +1,17 @@
-""" Exceptions. """
+"""Exceptions."""
+
 
 class AquacellApiException(Exception):
-    """ Base exception for Aquacell API """
+    """Base exception for Aquacell API"""
 
 
 class NotAuthenticated(AquacellApiException):
-    """ Not authenticated exception. """
+    """Not authenticated exception."""
 
 
 class ApiException(AquacellApiException):
-    """ Api error. """
+    """Api error."""
 
 
 class AuthenticationFailed(AquacellApiException):
-    """ Authentication failed. """
+    """Authentication failed."""

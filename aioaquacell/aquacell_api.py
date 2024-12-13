@@ -1,22 +1,24 @@
-""" Parses data from the Aquacell API. """
+"""Parses data from the Aquacell API."""
+
+import asyncio
 import json
 import logging
 import string
-import asyncio
+
 import botocore
 from aiohttp import ClientSession
 
 from aioaquacell.aws_cognito_authenticator import AwsCognitoAuthenticator
 from aioaquacell.aws_signature_request import AwsSignatureRequest
-from aioaquacell.const import Brand, SUPPORTED_BRANDS, REGION_NAME, ALL_SOFTENERS
-from aioaquacell.exceptions import NotAuthenticated, ApiException, AuthenticationFailed
+from aioaquacell.const import ALL_SOFTENERS, REGION_NAME, SUPPORTED_BRANDS, Brand
+from aioaquacell.exceptions import ApiException, AuthenticationFailed, NotAuthenticated
 from aioaquacell.softener import Softener
 
 _LOGGER = logging.getLogger(__name__)
 
 
 class AquacellApi:
-    """ Aquacell API. """
+    """Aquacell API."""
 
     def __init__(self, session: ClientSession, brand: Brand = Brand.AQUACELL):
         self.session = session
@@ -30,39 +32,47 @@ class AquacellApi:
         self.authenticator = AwsCognitoAuthenticator(
             REGION_NAME, self.client_id, self.pool_id, self.identity_pool_id
         )
-    
+
     async def authenticate_refresh(self, refresh_token) -> string:
-        """ Authenticate using a previous obtained refresh token. """
+        """Authenticate using a previous obtained refresh token."""
         return await self.__authenticate(None, None, refresh_token)
 
     async def authenticate(self, user_name, password) -> string:
-        """ Authenticate using username and password. """
+        """Authenticate using username and password."""
         return await self.__authenticate(user_name, password, None)
 
     async def __authenticate(self, user_name, password, refresh_token) -> string:
-        _LOGGER.debug("Authenticating with %s - %s (%s)", user_name, password, refresh_token)
+        _LOGGER.debug(
+            "Authenticating with %s - %s (%s)", user_name, password, refresh_token
+        )
         try:
             if refresh_token is None:
                 # Use asyncio_to_thread to make sure aiobotocore doesn't block event loop.
-                token = await asyncio.to_thread(self.authenticator.get_new_token, user_name, password)
+                token = await asyncio.to_thread(
+                    self.authenticator.get_new_token, user_name, password
+                )
             else:
-                token = await asyncio.to_thread(self.authenticator.refresh_token, refresh_token)
+                token = await asyncio.to_thread(
+                    self.authenticator.refresh_token, refresh_token
+                )
 
             self.id_token = token.id_token
             return token.refresh_token
         except botocore.exceptions.ClientError as e:
             _LOGGER.exception("Exception while authenticating")
-            if e.response['Error']['Code'] == 'NotAuthorizedException':
+            if e.response["Error"]["Code"] == "NotAuthorizedException":
                 raise AuthenticationFailed(e) from e
             raise ApiException(e) from e
 
     async def get_all_softeners(self) -> list[Softener]:
-        """ Retrieves all softeners. """
+        """Retrieves all softeners."""
         if self.id_token is None:
             raise NotAuthenticated()
 
         try:
-            credentials = await asyncio.to_thread(self.authenticator.get_credentials, self.id_token)
+            credentials = await asyncio.to_thread(
+                self.authenticator.get_credentials, self.id_token
+            )
             request = AwsSignatureRequest(
                 credentials.aws_access_key_id,
                 credentials.aws_secret_access_key,
