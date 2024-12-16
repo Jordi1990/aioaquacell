@@ -1,8 +1,9 @@
-""" Holds AWS credentials to sign a request to AWS services. """
+"""Holds AWS credentials to sign a request to AWS services."""
 
 
 class AwsCredentials:
-    """ Holds AWS credentials to sign a request to AWS services. """
+    """Holds AWS credentials to sign a request to AWS services."""
+
     def __init__(self, data):
         self.aws_access_key_id = data["AccessKeyId"]
         self.aws_secret_access_key = data["SecretKey"]

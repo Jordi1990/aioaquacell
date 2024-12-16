@@ -1,8 +1,13 @@
-""" Init. """
+"""Init."""
 
 from .aquacell_api import AquacellApi, Softener
-from .exceptions import ApiException, AuthenticationFailed, NotAuthenticated, AquacellApiException
 from .const import SUPPORTED_BRANDS, Brand
+from .exceptions import (
+    ApiException,
+    AquacellApiException,
+    AuthenticationFailed,
+    NotAuthenticated,
+)
 
 __all__ = [
     "AquacellApi",

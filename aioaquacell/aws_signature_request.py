@@ -1,10 +1,12 @@
-""" Defines the AWS request with sign headers. """
+"""Defines the AWS request with sign headers."""
+
 from aiohttp import ClientSession
 from aws_request_signer import AwsRequestSigner
 
 
 class AwsSignatureRequest:
-    """ Defines the AWS request with sign headers. """
+    """Defines the AWS request with sign headers."""
+
     def __init__(self, access_key, secret_key, session_token, region_name):
         self.region_name = region_name
         self.session_token = session_token
@@ -12,7 +14,7 @@ class AwsSignatureRequest:
         self.access_key = access_key
 
     async def request(self, url, session: ClientSession):
-        """ Executes signed request. """
+        """Executes signed request."""
 
         request_signer = AwsRequestSigner(
             self.region_name,
