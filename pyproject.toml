@@ -28,7 +28,7 @@ multi_line_output = 3
 
 [tool.poetry.dev-dependencies]
 isort = "^5.13.2"
-ruff = "0.8.1"
+ruff = "0.8.3"
 pylint = "^3.3.1"
 
 [tool.pylint.BASIC]
