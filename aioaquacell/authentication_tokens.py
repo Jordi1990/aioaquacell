@@ -1,8 +1,11 @@
-""" " Holds the tokens retrieved from authentication."""
+"""Holds the tokens retrieved from authentication."""
+
+from dataclasses import dataclass
 
 
+@dataclass
 class AuthenticationTokens:
-    """ " Holds the tokens retrieved from authentication."""
+    """Holds the tokens retrieved from authentication."""
 
     def __init__(self, data):
         self.id_token = data["IdToken"]
