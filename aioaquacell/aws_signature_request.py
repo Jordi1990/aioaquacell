@@ -1,9 +1,11 @@
 """Defines the AWS request with sign headers."""
 
+from dataclasses import dataclass
 from aiohttp import ClientSession
 from aws_request_signer import AwsRequestSigner
 
 
+@dataclass
 class AwsSignatureRequest:
     """Defines the AWS request with sign headers."""
 

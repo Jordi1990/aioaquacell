@@ -1,6 +1,9 @@
 """Holds AWS credentials to sign a request to AWS services."""
 
+from dataclasses import dataclass
 
+
+@dataclass
 class AwsCredentials:
     """Holds AWS credentials to sign a request to AWS services."""
 
