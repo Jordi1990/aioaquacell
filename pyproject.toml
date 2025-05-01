@@ -23,7 +23,7 @@ aws-request-signer = "^1.2.0"
 botocore = "^1.35.76"
 
 [tool.poetry.dev-dependencies]
-ruff = "^0.9.6"
+ruff = "^0.11.8"
 pre-commit = "^4.1.0"
 pre-commit-hooks = "^5.0.0"
 
