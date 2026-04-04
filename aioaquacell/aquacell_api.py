@@ -1,5 +1,6 @@
 """Parses data from the Aquacell API."""
 
+import asyncio
 import json
 import logging
 
@@ -48,9 +49,13 @@ class AquacellApi:
         _LOGGER.debug("Authenticating user %s", user_name)
         try:
             if refresh_token is None:
-                token = await self.authenticator.get_new_token(user_name, password)
+                token = await asyncio.to_thread(
+                    self.authenticator.get_new_token, user_name, password
+                )
             else:
-                token = await self.authenticator.refresh_token(refresh_token)
+                token = await asyncio.to_thread(
+                    self.authenticator.refresh_token, refresh_token
+                )
 
             self.id_token = token.id_token
             return token.refresh_token
@@ -66,7 +71,9 @@ class AquacellApi:
             raise NotAuthenticated()
 
         try:
-            credentials = await self.authenticator.get_credentials(self.id_token)
+            credentials = await asyncio.to_thread(
+                self.authenticator.get_credentials, self.id_token
+            )
             request = AwsSignatureRequest(
                 credentials.aws_access_key_id,
                 credentials.aws_secret_access_key,

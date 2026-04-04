@@ -7,7 +7,6 @@ Credentials used can be verified in the APK (res\raw\amplifyconfiguration.json).
 ## Requirements
 
 - aiohttp
-- aiobotocore
 - pycognito
 - aws-request-signer
 

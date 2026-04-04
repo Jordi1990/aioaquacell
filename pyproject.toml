@@ -9,7 +9,6 @@ authors = [{ name = "Jordi Epema", email = "jordi.epema@gmail.com" }]
 maintainers = [{ name = "Jordi Epema", email = "jordi.epema@gmail.com" }]
 dependencies = [
     "aiohttp>=3.13.5",
-    "aiobotocore>=2.13.1",
     "pycognito>=2024.5.1",
     "aws-request-signer>=1.2.0",
 ]
