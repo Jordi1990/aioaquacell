@@ -1,6 +1,6 @@
 """Class which holds credentials for a specific brand."""
 
-from attr import define
+from attrs import define
 
 
 @define(kw_only=True)
