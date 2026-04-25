@@ -3,14 +3,16 @@ name = "aioaquacell"
 version = "0.0.0"
 description = "Asynchronous library to retrieve details of your Aquacell water softener device"
 readme = "README.md"
-requires-python = ">=3.12,<4.0"
+requires-python = ">=3.10,<4"
 license = "Apache-2.0"
 authors = [{ name = "Jordi Epema", email = "jordi.epema@gmail.com" }]
 maintainers = [{ name = "Jordi Epema", email = "jordi.epema@gmail.com" }]
 dependencies = [
-    "aiohttp>=3.13.5",
+    "aiohttp>=3.9",
     "pycognito>=2024.5.1",
-    "aws-request-signer>=1.2.0",
+    "boto3>=1.10.49",
+    "botocore>=1.13.49",
+    "aws-request-signer>=1.0",
 ]
 
 [project.urls]
