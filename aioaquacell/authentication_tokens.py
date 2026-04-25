@@ -1,5 +1,7 @@
 """Holds the tokens retrieved from authentication."""
 
+from __future__ import annotations
+
 from dataclasses import dataclass
 
 
@@ -7,9 +9,13 @@ from dataclasses import dataclass
 class AuthenticationTokens:
     """Holds the tokens retrieved from authentication."""
 
-    def __init__(self, data):
-        self.id_token = data["IdToken"]
-        try:
-            self.refresh_token = data["RefreshToken"]
-        except KeyError:
-            self.refresh_token = None
+    id_token: str
+    refresh_token: str | None
+
+    @classmethod
+    def from_dict(cls, data: dict) -> AuthenticationTokens:
+        """Create from AWS Cognito authentication result dict."""
+        return cls(
+            id_token=data["IdToken"],
+            refresh_token=data.get("RefreshToken"),
+        )

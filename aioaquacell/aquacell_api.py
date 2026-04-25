@@ -3,10 +3,9 @@
 import asyncio
 import json
 import logging
-import string
 
-import botocore
 from aiohttp import ClientSession
+from botocore.exceptions import ClientError
 
 from aioaquacell.aws_cognito_authenticator import AwsCognitoAuthenticator
 from aioaquacell.aws_signature_request import AwsSignatureRequest
@@ -20,9 +19,9 @@ _LOGGER = logging.getLogger(__name__)
 class AquacellApi:
     """Aquacell API."""
 
-    def __init__(self, session: ClientSession, brand: Brand = Brand.AQUACELL):
+    def __init__(self, session: ClientSession, brand: Brand = Brand.AQUACELL) -> None:
         self.session = session
-        self.id_token = None
+        self.id_token: str | None = None
 
         _LOGGER.debug("Using authentication details from %s", brand)
         self.client_id = SUPPORTED_BRANDS[brand].client_id
@@ -33,21 +32,23 @@ class AquacellApi:
             REGION_NAME, self.client_id, self.pool_id, self.identity_pool_id
         )
 
-    async def authenticate_refresh(self, refresh_token) -> string:
+    async def authenticate_refresh(self, refresh_token: str) -> str | None:
         """Authenticate using a previous obtained refresh token."""
         return await self.__authenticate(None, None, refresh_token)
 
-    async def authenticate(self, user_name, password) -> string:
+    async def authenticate(self, user_name: str, password: str) -> str | None:
         """Authenticate using username and password."""
         return await self.__authenticate(user_name, password, None)
 
-    async def __authenticate(self, user_name, password, refresh_token) -> string:
-        _LOGGER.debug(
-            "Authenticating with %s - %s (%s)", user_name, password, refresh_token
-        )
+    async def __authenticate(
+        self,
+        user_name: str | None,
+        password: str | None,
+        refresh_token: str | None,
+    ) -> str | None:
+        _LOGGER.debug("Authenticating user %s", user_name)
         try:
             if refresh_token is None:
-                # Use asyncio_to_thread to make sure aiobotocore doesn't block event loop.
                 token = await asyncio.to_thread(
                     self.authenticator.get_new_token, user_name, password
                 )
@@ -58,7 +59,7 @@ class AquacellApi:
 
             self.id_token = token.id_token
             return token.refresh_token
-        except botocore.exceptions.ClientError as e:
+        except ClientError as e:
             _LOGGER.exception("Exception while authenticating")
             if e.response["Error"]["Code"] == "NotAuthorizedException":
                 raise AuthenticationFailed(e) from e
@@ -81,16 +82,10 @@ class AquacellApi:
             )
 
             response = await request.request(ALL_SOFTENERS, self.session)
-
             json_response = json.loads(response)
 
-            softeners = []
-
             _LOGGER.debug(json_response)
-            for softener_as_json in json_response:
-                softeners.append(Softener(softener_as_json))
-
-            return softeners
-        except botocore.exceptions.ClientError as e:
+            return [Softener.from_dict(s) for s in json_response]
+        except ClientError as e:
             _LOGGER.exception("Exception while retrieving softeners")
             raise ApiException(e) from e

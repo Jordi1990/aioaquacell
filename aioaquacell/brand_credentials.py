@@ -1,9 +1,9 @@
 """Class which holds credentials for a specific brand."""
 
-from attrs import define
+from dataclasses import dataclass
 
 
-@define(kw_only=True)
+@dataclass(kw_only=True)
 class BrandCredentials:
     """Class which holds credentials for a specific brand."""
 

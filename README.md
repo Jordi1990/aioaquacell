@@ -7,12 +7,10 @@ Credentials used can be verified in the APK (res\raw\amplifyconfiguration.json).
 ## Requirements
 
 - aiohttp
-- aiobotocore
-- requests_aws4auth
 - pycognito
-- aws_request_signer
+- aws-request-signer
+- boto3
 - botocore
-- botocore3
 
 ## Usage
 
