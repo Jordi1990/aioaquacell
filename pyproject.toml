@@ -27,7 +27,7 @@ packages = [
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.15.9"
-pre-commit = "^4.5.1"
+pre-commit = "^4.6.0"
 pre-commit-hooks = "^6.0.0"
 
 [build-system]
