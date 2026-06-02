@@ -8,7 +8,7 @@ license = "Apache-2.0"
 authors = [{ name = "Jordi Epema", email = "jordi.epema@gmail.com" }]
 maintainers = [{ name = "Jordi Epema", email = "jordi.epema@gmail.com" }]
 dependencies = [
-    "aiohttp>=3.9",
+    "aiohttp>=3.14.0",
     "pycognito>=2024.5.1",
     "boto3>=1.10.49",
     "botocore>=1.13.49",
